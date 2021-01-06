@@ -58,6 +58,7 @@ int main (int argc, char*argv[]){
 			case 9:{//remove um elemento OBS: falta implementar o fator de balanceamento após a remoção
 				scanf("%d", &valor);
 				raiz = remover(valor, raiz);
+				
 				break;
 			}case 99:{
 				flag = -1;

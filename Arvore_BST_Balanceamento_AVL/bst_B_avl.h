@@ -4,7 +4,7 @@
 
 typedef int tipo_dado;
 
-typedef struct no {
+typedef struct no {//no arvore
 	tipo_dado valor;
 	int fb;
 	struct no *esq, *dir;
