@@ -25,8 +25,8 @@ int main (int argc, char*argv[]){
 				imprimir(raiz);
 				printf("\n");
 				//imprimir sem o fator de balanço 
-				//preorder(raiz);
-				//printf("\n");
+				preorder(raiz);
+				printf("\n");
 				break;
 			}case 3:{// imprimir no inorder
 				inorder(raiz);
@@ -57,7 +57,7 @@ int main (int argc, char*argv[]){
 			}
 			case 9:{//remove um elemento OBS: falta implementar o fator de balanceamento após a remoção
 				scanf("%d", &valor);
-				raiz = remover(valor, raiz);
+				raiz = remover(valor, raiz, &controleFB);
 				
 				break;
 			}case 99:{

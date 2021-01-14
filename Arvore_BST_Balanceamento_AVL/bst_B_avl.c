@@ -24,6 +24,7 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 			switch (raiz->fb){
 				case 0:{
 					raiz->fb = 1;
+					*cresceu = 1;
 					break;				
 				}
 				case -1:{
@@ -33,8 +34,11 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 				}
 				case 1:{
 					*cresceu = 0;
-					return rotacionar(raiz);//Right
-					break;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0){
+						*cresceu = 0;
+					}
+					return raiz;
 				}
 			}
 		}
@@ -44,10 +48,12 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 			switch(raiz->fb){
 				case 0:{
 					raiz->fb = -1;
+					*cresceu = -1;
+
 					break;
 				}
 				case -1:{
-					*cresceu = -1;
+					*cresceu = 0;
 					return rotacionar(raiz);//Left
 					break;
 				}
@@ -62,7 +68,6 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 	}
 	return raiz;
 }
-
 
 arvore rotacionar(arvore raiz){
     if(raiz->fb > 0){
@@ -86,22 +91,25 @@ arvore rotacionar(arvore raiz){
 
 }
 
-
-
 arvore rotacao_simples_esquerda(arvore raiz){
     arvore p, u, t2;
     p = raiz;
     u = raiz->dir;
 
-    p->esq = u->dir;
-	u->dir = p;
-	p->fb = 0;
-	u->fb = 0;
+    p->dir = u->esq;
+	u->esq = p;
+	if(u->fb == 1) {
+		p->fb = 0;
+		u->fb = 0;
+	} else {
+		p->fb = 1;
+		u->fb = -1;
+	}	
 	return u;
 }
 
 arvore rotacao_dupla_esquerda(arvore raiz){
-	arvore p, u, v, t2, t3;
+	arvore p, u, v;
 	//passo 1
 	p = raiz;
 	u = raiz->dir;
@@ -118,47 +126,54 @@ arvore rotacao_dupla_esquerda(arvore raiz){
 		p->fb = 0;
 	}
 	if(v->fb == -1){
-	u->fb = 1;
+		u->fb = 1;
 	}else{
-	 u->fb = 0;
+	 	u->fb = 0;
 	}
 	v->fb = 0;
 	
 	return v;
 }
+
 arvore rotacao_simples_direita(arvore raiz){
     arvore p, u, t2;
     // passo 1
     p = raiz;
     u = raiz->esq;
 	
-	p->dir = u->esq;
-	u->esq = p;
+	p->esq = u->dir;
+	u->dir = p;
 
-	p->fb = 0;
-	u->fb = 0;
+	if(u->fb == -1) {
+		p->fb = 0;
+		u->fb = 0;
+	} else {
+		p->fb = -1;
+		u->fb = 1;
+	}
 
 	return u;
 	
 }
-arvore rotacao_dupla_direita(arvore raiz){
-	arvore p, u, v,t1, t2, t3, t4;
-    //passo 1: inicializar ponteiros
-    p = raiz;
-    u = raiz->dir;
-	v = u->esq;
-	u->esq = v->dir;
-	v->dir = u;
-	p->dir = v->esq;
-	v->esq = p;
 
-	if(v->fb == 1){
-	 p->fb = -1;
+arvore rotacao_dupla_direita(arvore raiz){
+	arvore p, u, v;
+    p = raiz;
+    u = raiz->esq;
+	v = u->dir;
+
+	u->dir = v->esq;
+	v->esq = u;
+	p->esq = v->dir;
+	v->dir = p;
+
+	if(v->fb == -1){
+	 p->fb = 1;
 	}else{
 	 p->fb = 0;
 	}
-	if(v->fb == -1){
-	 u->fb = 1;
+	if(v->fb == 1){
+	 u->fb = -1;
 	}else{
 	 u->fb = 0;
 	} 
@@ -166,7 +181,6 @@ arvore rotacao_dupla_direita(arvore raiz){
 
 	return v;
 }
-
 
 arvore inserir(arvore raiz, int valor){
 	if(raiz == NULL){
@@ -189,8 +203,6 @@ arvore inserir(arvore raiz, int valor){
 	
 }
 
-
-
 void imprimir(arvore raiz){
     printf("(");
     if(raiz != NULL){
@@ -204,6 +216,7 @@ void imprimir(arvore raiz){
 void imprimir_elemento(arvore raiz){
     printf("%d [%d]", raiz->valor, raiz->fb);
 }
+
 void preorder(arvore raiz){
 	
 	if(raiz == NULL){
@@ -223,6 +236,7 @@ void inorder(arvore raiz){
 		inorder(raiz->dir);
 	}
 }
+
 void posorder(arvore raiz){
 	if(raiz == NULL){
 
@@ -232,6 +246,7 @@ void posorder(arvore raiz){
 		printf("[%d]", raiz->valor);
 	}
 }
+
 void reverse(arvore raiz){
 	if(raiz == NULL){
 	}else{
@@ -241,6 +256,7 @@ void reverse(arvore raiz){
 		reverse(raiz->esq);
 	}
 }
+
 int qtdPar(arvore raiz){
 	int par =0;
 	if(raiz == NULL){
@@ -257,6 +273,7 @@ int qtdPar(arvore raiz){
 	return par;
 	
 }
+
 void quadrado(arvore raiz){
 	if(raiz == NULL){
 			
@@ -267,6 +284,7 @@ void quadrado(arvore raiz){
 
 	}
 }
+
 int existe(arvore raiz, int chave){
 	int chaveExiste = 0;
 	if(raiz == NULL){
@@ -282,7 +300,8 @@ int existe(arvore raiz, int chave){
 	return chaveExiste;
 }
 
-arvore remover (int valor, arvore raiz) {
+arvore remover (int valor, arvore raiz, int *diminuiu) {
+
 	if(raiz == NULL) 
 		return NULL;
 	
@@ -294,19 +313,63 @@ arvore remover (int valor, arvore raiz) {
 			return raiz->esq;
 		}
 		raiz->valor = maior_elemento(raiz->esq);
-		raiz->esq = remover(raiz->valor, raiz->esq);
+		raiz->esq = remover(raiz->valor, raiz->esq, diminuiu);
 		return raiz;
 	}	
 	if(valor > raiz->valor) {
-			raiz->dir = remover(valor, raiz->dir);
-       //     verifica se a árvore diminuiu e ajusta os fatores de fbanço
+		raiz->dir = remover(valor, raiz->dir, diminuiu);
+		if(*diminuiu){
+			switch(raiz->fb){
+				case 0:{
+					raiz->fb = -1;
+					*diminuiu = 0;
+					break;
+				}
+				case -1:{
+					*diminuiu = 1;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0){
+						*diminuiu = 0;
+					}
+					return raiz;
+				}
+				case 1:{
+					raiz->fb = 0;
+					*diminuiu = 1;
+					break;
+				}
+
+			}
+		}
+	
 	} else {
-			raiz->esq = remover(valor, raiz->esq);
-        //
+		raiz->esq = remover(valor, raiz->esq, diminuiu);
+		if(*diminuiu){
+			switch (raiz->fb){
+				case 0:{
+					raiz->fb = 1;
+					*diminuiu = 0;
+					break;				
+				}
+				case -1:{
+					raiz->fb = 0;
+					*diminuiu = -0;
+					break;
+				}
+				case 1:{
+					*diminuiu = -1;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0){
+						*diminuiu = 0;
+					}
+					return raiz ;//Right
+				}
+			}
+		}
 	}
 	return raiz;
-
 }
+
 int maior_elemento(arvore raiz) {
 	if(raiz == NULL)
 			return -1;
