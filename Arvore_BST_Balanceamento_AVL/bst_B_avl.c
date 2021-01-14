@@ -34,11 +34,7 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 				}
 				case 1:{
 					*cresceu = 0;
-					raiz = rotacionar(raiz);
-					if(raiz->fb != 0){
-						*cresceu = 0;
-					}
-					return raiz;
+					return rotacionar(raiz);
 				}
 			}
 		}
@@ -54,8 +50,7 @@ arvore inserirAvl(int valor, arvore raiz, int *cresceu){
 				}
 				case -1:{
 					*cresceu = 0;
-					return rotacionar(raiz);//Left
-					break;
+					return rotacionar(raiz);
 				}
 				case 1:{
 					raiz->fb = 0;
@@ -82,10 +77,10 @@ arvore rotacionar(arvore raiz){
         switch (raiz->esq->fb){
 
 			case 0:
-			case 1:
-				return rotacao_dupla_direita(raiz);
 			case -1:
 				return rotacao_simples_direita(raiz);
+			case 1:
+				return rotacao_dupla_direita(raiz);
         }
     }
 
@@ -305,8 +300,10 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 	if(raiz == NULL) 
 		return NULL;
 	
-	if(raiz->valor == valor) {		
+	if(raiz->valor == valor) {	
+
 		if(raiz->esq == NULL) {
+			
 			return raiz->dir;
 		}
 		if(raiz->dir == NULL) {
@@ -314,12 +311,58 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 		}
 		raiz->valor = maior_elemento(raiz->esq);
 		raiz->esq = remover(raiz->valor, raiz->esq, diminuiu);
-		return raiz;
+		if(*diminuiu){
+			switch(raiz->fb){
+				case 0:{
+					raiz->fb = 1;
+					*diminuiu = 0;
+					break;
+				}
+				case -1:{
+					*diminuiu = 0;
+					raiz->fb = 0;
+					break;
+				}
+				case 1:{
+					*diminuiu = 1;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0){
+						*diminuiu = 0;
+					}
+					return raiz;
+				}
+			}
+		}
 	}	
 	if(valor > raiz->valor) {
 		raiz->dir = remover(valor, raiz->dir, diminuiu);
 		if(*diminuiu){
-			switch(raiz->fb){
+			switch (raiz->dir->fb){
+				case 0:{
+					raiz->fb = 1;
+					*diminuiu = 0;
+					break;				
+				}
+				case -1:{
+					*diminuiu = 1;
+					raiz->fb = 0;
+					break;
+				}
+				case 1:{
+					*diminuiu = -1;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0){
+						*diminuiu = 0;
+					}
+					return raiz ;//Right
+				}
+			}
+		}
+		
+	} else {
+		raiz->esq = remover(valor, raiz->esq, diminuiu);
+		if(*diminuiu){
+			switch(raiz->esq->fb){
 				case 0:{
 					raiz->fb = -1;
 					*diminuiu = 0;
@@ -334,38 +377,14 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 					return raiz;
 				}
 				case 1:{
-					raiz->fb = 0;
 					*diminuiu = 1;
+					raiz->fb = 0;
 					break;
 				}
 
 			}
 		}
 	
-	} else {
-		raiz->esq = remover(valor, raiz->esq, diminuiu);
-		if(*diminuiu){
-			switch (raiz->fb){
-				case 0:{
-					raiz->fb = 1;
-					*diminuiu = 0;
-					break;				
-				}
-				case -1:{
-					raiz->fb = 0;
-					*diminuiu = -0;
-					break;
-				}
-				case 1:{
-					*diminuiu = -1;
-					raiz = rotacionar(raiz);
-					if(raiz->fb != 0){
-						*diminuiu = 0;
-					}
-					return raiz ;//Right
-				}
-			}
-		}
 	}
 	return raiz;
 }
@@ -373,8 +392,8 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 int maior_elemento(arvore raiz) {
 	if(raiz == NULL)
 			return -1;
-	if(raiz->dir == NULL)
-		return raiz->valor;
+	if(raiz->dir == NULL){
+		return raiz->valor;}
 	else
 		return maior_elemento(raiz->dir);
 }

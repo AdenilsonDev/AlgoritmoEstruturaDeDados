@@ -20,11 +20,7 @@ int main (int argc, char*argv[]){
 				//raiz = inserir(raiz, valor);
 				break;
 			}
-			case 2:{//imrpimir no preorder
-				//imprime com fator de balanço - verificação de rotação da raiz
-				imprimir(raiz);
-				printf("\n");
-				//imprimir sem o fator de balanço 
+			case 2:{
 				preorder(raiz);
 				printf("\n");
 				break;
@@ -60,7 +56,16 @@ int main (int argc, char*argv[]){
 				raiz = remover(valor, raiz, &controleFB);
 				
 				break;
-			}case 99:{
+			}
+			case 10:{
+//imprime com fator de balanço - verificação de rotação da raiz
+				imprimir(raiz);
+				printf("\n");
+				break;
+			}
+			
+			
+			case 99:{
 				flag = -1;
 				break;
 			}
