@@ -5,9 +5,9 @@ int main (int argc, char*argv[]){
 	no *raiz = NULL;
 
 	int flag = 1;
+	int option;
 
 	while(flag != -1){
-		int option;
 		scanf("%d", &option);
 
 		switch (option){
