@@ -1,6 +1,0 @@
-Caso 1: fb(raiz) = -1
-Caso 2: fb(raiz) = 0
-Caso 3: fb(raiz) = 1 com raiz->dir->fb == 0
-Caso 4: fb(raiz) = 1 com raiz->dir->fb != 0
-
-(Analisa-se o pai do elemento a ser removido)

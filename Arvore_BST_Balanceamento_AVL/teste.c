@@ -57,8 +57,7 @@ int main (int argc, char*argv[]){
 				
 				break;
 			}
-			case 10:{
-//imprime com fator de balanço - verificação de rotação da raiz
+			case 10:{//imprime com fator de balanço - verificação de rotação da raiz
 				imprimir(raiz);
 				printf("\n");
 				break;

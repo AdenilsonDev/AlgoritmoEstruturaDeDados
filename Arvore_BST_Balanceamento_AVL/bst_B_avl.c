@@ -90,9 +90,11 @@ arvore rotacao_simples_esquerda(arvore raiz){
     arvore p, u, t2;
     p = raiz;
     u = raiz->dir;
+	t2 = u->esq;
 
-    p->dir = u->esq;
+    p->dir = t2;
 	u->esq = p;
+
 	if(u->fb == 1) {
 		p->fb = 0;
 		u->fb = 0;
@@ -117,16 +119,16 @@ arvore rotacao_dupla_esquerda(arvore raiz){
 	//passo 3
 	if(v->fb == 1){
 		p->fb = -1;
+		v->fb = 0;
 	}else{ 
 		p->fb = 0;
 	}
 	if(v->fb == -1){
 		u->fb = 1;
+		v->fb = 0;
 	}else{
 	 	u->fb = 0;
 	}
-	v->fb = 0;
-	
 	return v;
 }
 
@@ -135,8 +137,9 @@ arvore rotacao_simples_direita(arvore raiz){
     // passo 1
     p = raiz;
     u = raiz->esq;
+	t2= u->dir;
 	
-	p->esq = u->dir;
+	p->esq = t2;
 	u->dir = p;
 
 	if(u->fb == -1) {
@@ -163,16 +166,17 @@ arvore rotacao_dupla_direita(arvore raiz){
 	v->dir = p;
 
 	if(v->fb == -1){
-	 p->fb = 1;
+		p->fb = 1;
+		v->fb = 0;
 	}else{
-	 p->fb = 0;
+		p->fb = 0;
 	}
 	if(v->fb == 1){
-	 u->fb = -1;
+		u->fb = -1;
+		v->fb = 0;
 	}else{
-	 u->fb = 0;
+		u->fb = 0;
 	} 
-	v->fb = 0;
 
 	return v;
 }
@@ -301,9 +305,8 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 		return NULL;
 	
 	if(raiz->valor == valor) {	
-
+		*diminuiu = 1;	
 		if(raiz->esq == NULL) {
-			
 			return raiz->dir;
 		}
 		if(raiz->dir == NULL) {
@@ -316,7 +319,6 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 				case 0:{
 					raiz->fb = 1;
 					*diminuiu = 0;
-					break;
 				}
 				case -1:{
 					*diminuiu = 0;
@@ -331,57 +333,56 @@ arvore remover (int valor, arvore raiz, int *diminuiu) {
 					}
 					return raiz;
 				}
+
 			}
 		}
+
+		return raiz;
 	}	
 	if(valor > raiz->valor) {
 		raiz->dir = remover(valor, raiz->dir, diminuiu);
-		if(*diminuiu){
-			switch (raiz->dir->fb){
-				case 0:{
-					raiz->fb = 1;
+	if(*diminuiu){
+			switch (raiz->fb){
+				case 0:
+					raiz->fb = -1;
 					*diminuiu = 0;
 					break;				
-				}
-				case -1:{
+				
+				case -1:
 					*diminuiu = 1;
-					raiz->fb = 0;
+					raiz= rotacionar(raiz);
+					if(raiz->fb != 0)
+					     *diminuiu = 0;
+					return raiz;
+				
+				case 1:
+					*diminuiu = 1;
+					raiz->fb=0;
 					break;
-				}
-				case 1:{
-					*diminuiu = -1;
-					raiz = rotacionar(raiz);
-					if(raiz->fb != 0){
-						*diminuiu = 0;
-					}
-					return raiz ;//Right
-				}
+				
 			}
 		}
 		
 	} else {
 		raiz->esq = remover(valor, raiz->esq, diminuiu);
 		if(*diminuiu){
-			switch(raiz->esq->fb){
-				case 0:{
-					raiz->fb = -1;
+			switch(raiz->fb){
+				case 0:
+					raiz->fb = 1;
 					*diminuiu = 0;
 					break;
-				}
-				case -1:{
-					*diminuiu = 1;
-					raiz = rotacionar(raiz);
-					if(raiz->fb != 0){
-						*diminuiu = 0;
-					}
-					return raiz;
-				}
-				case 1:{
+				
+				case -1:
 					*diminuiu = 1;
 					raiz->fb = 0;
 					break;
-				}
-
+				
+				case 1:
+					*diminuiu = 1;
+					raiz = rotacionar(raiz);
+					if(raiz->fb != 0)
+					     *diminuiu = 0;
+					return raiz;
 			}
 		}
 	
